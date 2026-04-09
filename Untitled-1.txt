@@ -1,0 +1,116 @@
+<?php
+// =====================
+// CONEXIÓN A BASE DE DATOS
+// =====================
+class Conexion {
+    public static function conexionBD() {
+        $host = "localhost";
+        $dbname = "escuela"; // CAMBIA si tu BD tiene otro nombre
+        $user = "root";
+        $pass = "";
+
+        try {
+            $conexion = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $user, $pass);
+            $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $conexion;
+        } catch (PDOException $e) {
+            echo "<p class='text-red-500'>Error de conexión: " . $e->getMessage() . "</p>";
+            return null;
+        }
+    }
+}
+
+// Intentar conexión
+$db = Conexion::conexionBD();
+
+// Variables para conteo
+$alumnos = 0;
+$profesores = 0;
+$inscripciones = 0;
+$asignaturas = 0;
+
+if ($db) {
+    try {
+        $alumnos = $db->query("SELECT COUNT(*) FROM alumnos")->fetchColumn();
+        $profesores = $db->query("SELECT COUNT(*) FROM profesores")->fetchColumn();
+        $inscripciones = $db->query("SELECT COUNT(*) FROM inscripcion")->fetchColumn();
+        $asignaturas = $db->query("SELECT COUNT(*) FROM asignaturas")->fetchColumn();
+    } catch (Exception $e) {
+        echo "<p class='text-red-500'>Error en consulta: " . $e->getMessage() . "</p>";
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Base de Datos Escuela</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-yellow-200">
+
+<div class="flex h-screen">
+  <aside class="w-64 bg-yellow-500 text-black flex flex-col">
+    <div class="p-6 text-2xl font-bold border-b border-yellow-400">Módulos</div>
+    <nav class="flex-1 p-4 space-y-2">
+      <a href="#" class="block px-4 py-2 rounded hover:bg-yellow-300">Alumnos</a>
+      <a href="#" class="block px-4 py-2 rounded hover:bg-yellow-300">Asignatura</a>
+      <a href="#" class="block px-4 py-2 rounded hover:bg-yellow-300">Inscripción</a>
+      <a href="#" class="block px-4 py-2 rounded hover:bg-yellow-300">Profesor</a>
+    </nav>
+  </aside>
+
+  <div class="flex-1 flex flex-col">
+    <header class="bg-amber-200 shadow p-4 flex justify-between items-center">
+      <h1 class="text-xl font-semibold text-amber-900">Panel de Control</h1>
+      <button class="bg-yellow-400 text-black px-4 py-2 rounded hover:bg-yellow-300">Nuevo</button>
+    </header>
+
+    <main class="p-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        
+        <div class="bg-amber-200 p-6 rounded-xl shadow hover:bg-amber-300">
+          <h2 class="text-gray-700">Alumnos</h2>
+          <p class="text-3xl font-bold text-yellow-600"><?php echo $alumnos; ?></p>
+        </div>
+
+        <div class="bg-amber-200 p-6 rounded-xl shadow hover:bg-amber-300">
+          <h2 class="text-gray-700">Profesores</h2>
+          <p class="text-3xl font-bold text-yellow-600"><?php echo $profesores; ?></p>
+        </div>
+
+        <div class="bg-amber-200 p-6 rounded-xl shadow hover:bg-amber-300">
+          <h2 class="text-gray-700">Inscripción</h2>
+          <p class="text-3xl font-bold text-yellow-600"><?php echo $inscripciones; ?></p>
+        </div>
+
+        <div class="bg-amber-200 p-6 rounded-xl shadow hover:bg-amber-300">
+          <h2 class="text-gray-700">Asignaturas</h2>
+          <p class="text-3xl font-bold text-yellow-600"><?php echo $asignaturas; ?></p>
+        </div>
+
+      </div>
+
+      <div class="mt-8 bg-amber-100 rounded-xl shadow p-6">
+        <h2 class="text-lg font-semibold mb-4 text-gray-800">Estado del Sistema</h2>
+        
+        <div class="p-4 bg-white rounded-lg border border-amber-200">
+          <?php
+            if ($db) {
+                echo "<p class='text-green-600 font-bold'>✅ Conexión exitosa a la base de datos</p>";
+            } else {
+                echo "<p class='text-red-500'>❌ No se pudo conectar</p>";
+            }
+          ?>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+</body>
+</html>
