@@ -196,6 +196,99 @@ $data = $controller->index();
 
 </div>
 </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
 
+    // =========================
+    // BOTÓN NUEVO (REDIRECCIÓN REAL)
+    // =========================
+    const btnNuevo = document.querySelector("header button");
+
+    if (btnNuevo) {
+        btnNuevo.addEventListener("click", () => {
+
+            // Cambia esto según tu módulo principal
+            window.location.href = "nuevo.php";
+
+        });
+    }
+
+
+    // =========================
+    // MENÚ LATERAL (NAVEGACIÓN REAL)
+    // =========================
+    const menuLinks = document.querySelectorAll("aside nav a");
+const rutas = {
+    "alumnos": "alumnos.php",
+    "asignatura": "asignatura.php",
+    "inscripcion": "inscripcion.php",
+    "Profesor": "profesor.php",
+    "Profesores": "profesor.php" // respaldo
+};
+
+    menuLinks.forEach(link => {
+
+        link.addEventListener("click", (e) => {
+            e.preventDefault();
+
+            const modulo = link.textContent.trim();
+
+            // Validación profesional
+            if (rutas[modulo]) {
+                window.location.href = rutas[modulo];
+            } else {
+                console.warn("Ruta no definida para:", modulo);
+            }
+
+        });
+
+    });
+
+
+    // =========================
+    // MENÚ ACTIVO (UI PROFESIONAL)
+    // =========================
+    const currentPage = window.location.pathname.split("/").pop();
+
+    menuLinks.forEach(link => {
+
+        const modulo = link.textContent.trim();
+        const ruta = rutas[modulo];
+
+        if (ruta === currentPage) {
+            link.classList.add("bg-yellow-300", "font-bold");
+        }
+
+        link.addEventListener("click", () => {
+
+            menuLinks.forEach(l => l.classList.remove("bg-yellow-300", "font-bold"));
+            link.classList.add("bg-yellow-300", "font-bold");
+
+        });
+
+    });
+
+
+    // =========================
+    // EXTRA: EFECTO CLICK (UX PRO)
+    // =========================
+    document.querySelectorAll("button, a").forEach(el => {
+
+        el.addEventListener("mousedown", () => {
+            el.style.transform = "scale(0.95)";
+        });
+
+        el.addEventListener("mouseup", () => {
+            el.style.transform = "scale(1)";
+        });
+
+        el.addEventListener("mouseleave", () => {
+            el.style.transform = "scale(1)";
+        });
+
+    });
+
+});
+</script>
 </body>
 </html>
